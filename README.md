@@ -31,20 +31,46 @@ cp .env.example .env
 LODGIFY_API_KEY=your_actual_api_key_here
 ```
 
-4. Start the server:
+4. Test your configuration:
 ```bash
-docker-compose up -d
+docker-compose run info --mode test
+```
+
+5. Start the server:
+```bash
+# Run server info (default)
+docker-compose up info
+
+# Or run the MCP server daemon
+docker-compose up -d server
 ```
 
 ### Using Docker directly
 
+The server supports multiple modes for different use cases:
+
 ```bash
-docker run -d \
-  --name lodgify-mcp-server \
+# Test API connectivity
+docker run --rm -e LODGIFY_API_KEY=your_api_key_here \
+  ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
+
+# Show server information
+docker run --rm -e LODGIFY_API_KEY=your_api_key_here \
+  ghcr.io/shanephall/lodgify-mcp-server:latest --mode info
+
+# Run MCP server (for MCP client connections)
+docker run -d --name lodgify-mcp-server \
   -e LODGIFY_API_KEY=your_api_key_here \
-  -p 8000:8000 \
-  ghcr.io/shanephall/lodgify-mcp-server:latest
+  ghcr.io/shanephall/lodgify-mcp-server:latest --mode server
 ```
+
+### Container Modes
+
+| Mode | Purpose | Usage |
+|------|---------|-------|
+| `info` | Show server info and configuration status (default) | Validation and debugging |
+| `test` | Test API connectivity and validate configuration | Pre-deployment testing |
+| `server` | Run the MCP server for client connections | Production MCP server |
 
 ### Using the GitHub Container Registry
 
@@ -55,8 +81,9 @@ docker pull ghcr.io/shanephall/lodgify-mcp-server:latest
 ```
 
 Available tags:
+
 - `latest` - Latest stable release from main branch
-- `v1.0.0` - Specific version tags
+- `v1.0.0` - Specific version tags  
 - `main` - Latest development build
 
 ## Local Development
@@ -191,8 +218,55 @@ For issues related to:
 
 ## Changelog
 
-### v0.1.0
-- Initial release
-- Basic property and booking management
-- Docker containerization
-- GitHub Actions CI/CD
+For detailed version history, see [CHANGELOG.md](CHANGELOG.md).
+
+### Latest Changes (v0.1.0)
+
+- Initial release with complete containerization support
+- All Docker containerization issues resolved
+- Enhanced MCP server with multi-mode operation
+- Comprehensive API tools and resources for Lodgify integration
+
+## Troubleshooting
+
+### Docker Containerization
+
+The containerization has been fully tested and resolved. If you encounter issues:
+
+#### Common Issues and Solutions
+
+##### Container fails to start
+
+- Ensure `LODGIFY_API_KEY` is set in your environment
+- Test your API key first: `docker-compose run info --mode test`
+
+##### MCP client cannot connect
+
+- Use `--mode server` for MCP client connections
+- Ensure the container is running in daemon mode: `docker-compose up -d server`
+
+##### Health checks failing
+
+- The container includes comprehensive health checks
+- Check container logs: `docker logs <container_name>`
+- Validate configuration: `docker-compose run info --mode info`
+
+##### API connectivity issues
+
+- Test API connection: `docker-compose run info --mode test`
+- Verify your API key is valid and has proper permissions
+- Check Lodgify API status if connection tests fail
+
+#### Recent Fixes (v0.1.0)
+
+The following containerization issues have been resolved:
+
+- ✅ **Python version alignment**: Fixed mismatch between `.python-version` (3.11) and Dockerfile
+- ✅ **Virtual environment paths**: Corrected Python executable paths in container
+- ✅ **MCP protocol communication**: Fixed stdin/stdout handling for MCP clients
+- ✅ **Health check commands**: Updated to use proper virtual environment Python
+- ✅ **API key validation**: Enhanced error messages and validation
+- ✅ **Docker Compose configuration**: Improved networking and logging setup
+- ✅ **Build optimization**: Resolved package building conflicts and improved caching
+
+All container modes (info, test, server) are now fully functional.

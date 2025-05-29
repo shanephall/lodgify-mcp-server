@@ -1,5 +1,5 @@
 services:
-  lodgify-mcp-server:
+  info:
     build: .
     # Or use the GitHub Container Registry image:
     # image: ghcr.io/shanephall/lodgify-mcp-server:latest
@@ -9,12 +9,12 @@ services:
       - lodgify-network
     # Default mode shows server info - container will exit after showing info
     # To run different modes, override the command:
-    # docker-compose run lodgify-mcp-server --mode server
-    # docker-compose run lodgify-mcp-server --mode test
+    # docker-compose run info --mode server
+    # docker-compose run info --mode test
     command: ["--mode", "info"]
     
   # Service for running the actual MCP server as a daemon
-  lodgify-mcp-server-daemon:
+  server:
     build: .
     # Or use the GitHub Container Registry image:
     # image: ghcr.io/shanephall/lodgify-mcp-server:latest
