@@ -1,10 +1,55 @@
 # Python-generated files
 __pycache__/
 *.py[oc]
+*.py[cod]
+*$py.class
 build/
 dist/
 wheels/
 *.egg-info
+.installed.cfg
+*.egg
+MANIFEST
 
 # Virtual environments
 .venv
+.env
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# API Keys (never commit these!)
+.env
+*.key
+*.pem
+secrets.txt
+
+# Docker
+docker-compose.override.yml
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/

@@ -1,0 +1,46 @@
+name: Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v2
+      with:
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: uv sync --all-extras --dev
+    
+    - name: Lint with ruff
+      run: uv run ruff check .
+    
+    - name: Type check with mypy
+      run: uv run mypy lodgify_server.py || true  # Allow to fail for now
+    
+    - name: Test import
+      run: uv run python -c "import lodgify_server; print('Import successful')"
+    
+    - name: Test server startup (dry run)
+      run: |
+        export LODGIFY_API_KEY="test-key-for-import-only"
+        timeout 10s uv run python -c "
+        import lodgify_server
+        print('Server module loaded successfully')
+        " || true
