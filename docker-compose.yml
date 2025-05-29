@@ -23,13 +23,25 @@ services:
     networks:
       - lodgify-network
     command: ["--mode", "server"]
-    # Keep container running with proper stdin/stdout for MCP communication
+    # Proper configuration for MCP communication
     stdin_open: true
-    tty: true
+    tty: false  # Set to false for better MCP protocol handling
     restart: unless-stopped
+    # Add proper logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       # Optional: mount logs directory
-      - ./logs:/app/logs
+      - ./logs:/app/logs    # Health check override for daemon mode
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import lodgify_server; print('Health: OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   lodgify-network:
