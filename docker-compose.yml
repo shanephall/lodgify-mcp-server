@@ -1,0 +1,48 @@
+services:
+  info:
+    build: .
+    # Or use the GitHub Container Registry image:
+    # image: ghcr.io/shanephall/lodgify-mcp-server:latest
+    environment:
+      - LODGIFY_API_KEY=${LODGIFY_API_KEY}
+    networks:
+      - lodgify-network
+    # Default mode shows server info - container will exit after showing info
+    # To run different modes, override the command:
+    # docker-compose run info --mode server
+    # docker-compose run info --mode test
+    command: ["--mode", "info"]
+    
+  # Service for running the actual MCP server as a daemon
+  server:
+    build: .
+    # Or use the GitHub Container Registry image:
+    # image: ghcr.io/shanephall/lodgify-mcp-server:latest
+    environment:
+      - LODGIFY_API_KEY=${LODGIFY_API_KEY}
+    networks:
+      - lodgify-network
+    command: ["--mode", "server"]
+    # Proper configuration for MCP communication
+    stdin_open: true
+    tty: false  # Set to false for better MCP protocol handling
+    restart: unless-stopped
+    # Add proper logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      # Optional: mount logs directory
+      - ./logs:/app/logs    # Health check override for daemon mode
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import lodgify_server; print('Health: OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  lodgify-network:
+    driver: bridge
