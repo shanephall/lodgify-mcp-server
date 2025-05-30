@@ -3,7 +3,7 @@
 on:
   push:
     branches: [ main, master ]
-    tags: [ v* ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
@@ -61,10 +61,11 @@ jobs:
     - name: Test Docker image locally
       if: github.event_name == 'pull_request'
       run: |
-        docker buildx build --platform linux/amd64 --load --tag test-image .
+        UNIQUE_TAG=test-image-${{ github.sha }}
+        docker buildx build --platform linux/amd64 --load --tag $UNIQUE_TAG .
         echo Testing local image...
-        docker run --rm test-image --mode info
-        docker run --rm -e LODGIFY_API_KEY=test-key-for-import-only test-image --mode test || true
+        docker run --rm $UNIQUE_TAG --mode info
+        docker run --rm -e LODGIFY_API_KEY=test-key-for-import-only $UNIQUE_TAG --mode test || true
 
     - name: Test pushed Docker image
       if: github.event_name != 'pull_request'

@@ -29,10 +29,10 @@ jobs:
       run: uv sync --all-extras --dev
     
     - name: Lint with ruff
-      run: uv run ruff check . --fix
+      run: uv run ruff check .
     
     - name: Type check with mypy
-      run: uv run mypy lodgify_server.py main.py entrypoint.py || true  # Allow to fail for now
+      run: uv run mypy ./ || true  # Allow to fail for now
     
     - name: Test import
       run: uv run python -c "import lodgify_server; print('Import successful')"
