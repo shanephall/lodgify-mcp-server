@@ -32,15 +32,19 @@ jobs:
       run: uv run ruff check .
     
     - name: Type check with mypy
-      run: uv run mypy lodgify_server.py || true  # Allow to fail for now
+      run: uv run mypy ./ || true  # Allow to fail for now
     
     - name: Test import
       run: uv run python -c "import lodgify_server; print('Import successful')"
     
-    - name: Test server startup (dry run)
+    - name: Test entrypoint script
       run: |
         export LODGIFY_API_KEY="test-key-for-import-only"
-        timeout 10s uv run python -c "
+        # Test info mode (should work without real API key)
+        uv run python entrypoint.py --mode info
+        
+        # Test that server module loads
+        uv run python -c "
         import lodgify_server
         print('Server module loaded successfully')
         " || true

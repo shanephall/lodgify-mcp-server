@@ -11,17 +11,18 @@ Usage:
 """
 
 import os
-import asyncio
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from datetime import datetime, date
-from typing import Any, Dict, List, Optional, Union
-import json
+from typing import Any
 
 import httpx
-from mcp.server.fastmcp import FastMCP, Context
+from mcp.server.fastmcp import Context, FastMCP
 from mcp.server.fastmcp.prompts import base
+
+# Constants
+HTTP_OK = 200
+PROPERTIES_SUMMARY_LIMIT = 10
 
 
 @dataclass
@@ -45,9 +46,9 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
     api_key = os.getenv("LODGIFY_API_KEY")
     if not api_key:
         raise ValueError("LODGIFY_API_KEY environment variable is required")
-    
+
     config = LodgifyConfig(api_key=api_key)
-    
+
     # Create HTTP client with proper headers
     client = httpx.AsyncClient(
         base_url=config.base_url,
@@ -58,16 +59,16 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
         },
         timeout=config.timeout
     )
-    
+
     try:
         # Test API connection
         server.info("Testing Lodgify API connection...")
         response = await client.get("/properties", params={"limit": 1})
-        if response.status_code == 200:
+        if response.status_code == HTTP_OK:
             server.info("✅ Lodgify API connection successful")
         else:
             server.warning(f"⚠️ API test returned status {response.status_code}")
-        
+
         yield AppContext(config=config, client=client)
     finally:
         await client.aclose()
@@ -91,12 +92,12 @@ async def handle_api_error(response: httpx.Response) -> str:
             return f"Lodgify API Error {code}: {message}"
     except Exception:
         pass
-    
+
     return f"HTTP {response.status_code}: {response.text[:200]}..."
 
 
 # Global client reference - will be set during lifespan
-_client: Optional[httpx.AsyncClient] = None
+_client: httpx.AsyncClient | None = None
 
 
 def get_client() -> httpx.AsyncClient:
@@ -110,14 +111,14 @@ def get_client() -> httpx.AsyncClient:
 @asynccontextmanager
 async def app_lifespan_with_global(server: FastMCP) -> AsyncIterator[AppContext]:
     """Manage application lifecycle with Lodgify API client."""
-    global _client
-    
+    global _client  # noqa: PLW0603
+
     api_key = os.getenv("LODGIFY_API_KEY")
     if not api_key:
         raise ValueError("LODGIFY_API_KEY environment variable is required")
-    
+
     config = LodgifyConfig(api_key=api_key)
-    
+
     # Create HTTP client with proper headers
     _client = httpx.AsyncClient(
         base_url=config.base_url,
@@ -128,16 +129,16 @@ async def app_lifespan_with_global(server: FastMCP) -> AsyncIterator[AppContext]
         },
         timeout=config.timeout
     )
-    
+
     try:
         # Test API connection
         print("Testing Lodgify API connection...")
         response = await _client.get("/properties", params={"limit": 1})
-        if response.status_code == 200:
+        if response.status_code == HTTP_OK:
             print("Lodgify API connection successful")
         else:
             print(f"API test returned status {response.status_code}")
-        
+
         yield AppContext(config=config, client=_client)
     finally:
         await _client.aclose()
@@ -158,21 +159,21 @@ mcp = FastMCP(
 async def get_properties_list() -> str:
     """Get a summary list of all properties."""
     client = get_client()
-    
+
     try:
         response = await client.get("/properties")
         response.raise_for_status()
-        
+
         properties = response.json()
         if isinstance(properties, dict) and "items" in properties:
             properties_data = properties["items"]
         else:
             properties_data = properties
-        
+
         # Format for LLM consumption
         summary = ["# Lodgify Properties Summary\n"]
-        
-        for prop in properties_data[:10]:  # Limit to first 10 for overview
+
+        for prop in properties_data[:PROPERTIES_SUMMARY_LIMIT]:  # Limit to first 10 for overview
             summary.append(f"## Property ID: {prop.get('id', 'N/A')}")
             summary.append(f"- **Name**: {prop.get('name', 'N/A')}")
             summary.append(f"- **Type**: {prop.get('property_type', 'N/A')}")
@@ -180,12 +181,12 @@ async def get_properties_list() -> str:
             summary.append(f"- **Max Guests**: {prop.get('max_guests', 'N/A')}")
             summary.append(f"- **Bedrooms**: {prop.get('bedrooms', 'N/A')}")
             summary.append("")
-        
-        if len(properties_data) > 10:
-            summary.append(f"... and {len(properties_data) - 10} more properties.")
-        
+
+        if len(properties_data) > PROPERTIES_SUMMARY_LIMIT:
+            summary.append(f"... and {len(properties_data) - PROPERTIES_SUMMARY_LIMIT} more properties.")
+
         return "\n".join(summary)
-        
+
     except httpx.HTTPStatusError as e:
         return await handle_api_error(e.response)
     except Exception as e:
@@ -196,13 +197,13 @@ async def get_properties_list() -> str:
 async def get_property_details(property_id: str) -> str:
     """Get detailed information about a specific property."""
     client = get_client()
-    
+
     try:
         response = await client.get(f"/properties/{property_id}")
         response.raise_for_status()
-        
+
         property_data = response.json()
-        
+
         # Format property details for LLM
         details = [f"# Property Details: {property_data.get('name', 'N/A')}\n"]
         details.append(f"**Property ID**: {property_data.get('id', 'N/A')}")
@@ -211,13 +212,13 @@ async def get_property_details(property_id: str) -> str:
         details.append(f"**Maximum Guests**: {property_data.get('max_guests', 'N/A')}")
         details.append(f"**Bedrooms**: {property_data.get('bedrooms', 'N/A')}")
         details.append(f"**Bathrooms**: {property_data.get('bathrooms', 'N/A')}")
-        
+
         if property_data.get('description'):
             details.append(f"\n**Description**: {property_data['description']}")
-        
+
         if property_data.get('address'):
             details.append(f"\n**Address**: {property_data['address']}")
-        
+
         # Add room types if available
         if property_data.get('room_types'):
             details.append("\n## Room Types:")
@@ -225,9 +226,9 @@ async def get_property_details(property_id: str) -> str:
                 details.append(f"- **{room.get('name', 'N/A')}** (ID: {room.get('id', 'N/A')})")
                 details.append(f"  - Max Guests: {room.get('max_guests', 'N/A')}")
                 details.append(f"  - Base Rate: {room.get('base_rate', 'N/A')}")
-        
+
         return "\n".join(details)
-        
+
     except httpx.HTTPStatusError as e:
         return await handle_api_error(e.response)
     except Exception as e:
@@ -238,19 +239,19 @@ async def get_property_details(property_id: str) -> str:
 async def get_recent_bookings() -> str:
     """Get recent bookings summary."""
     client = get_client()
-    
+
     try:
         response = await client.get("/bookings", params={"limit": 20})
         response.raise_for_status()
-        
+
         bookings_data = response.json()
         if isinstance(bookings_data, dict) and "items" in bookings_data:
             bookings = bookings_data["items"]
         else:
             bookings = bookings_data
-        
+
         summary = ["# Recent Bookings Summary\n"]
-        
+
         for booking in bookings:
             summary.append(f"## Booking ID: {booking.get('id', 'N/A')}")
             summary.append(f"- **Guest**: {booking.get('guest_name', 'N/A')}")
@@ -260,9 +261,9 @@ async def get_recent_bookings() -> str:
             summary.append(f"- **Status**: {booking.get('status', 'N/A')}")
             summary.append(f"- **Total**: {booking.get('total', 'N/A')} {booking.get('currency_code', '')}")
             summary.append("")
-        
+
         return "\n".join(summary)
-        
+
     except httpx.HTTPStatusError as e:
         return await handle_api_error(e.response)
     except Exception as e:
@@ -276,32 +277,32 @@ async def get_properties(
     ctx: Context,
     limit: int = 50,
     offset: int = 0,
-    status: Optional[str] = None
-) -> Dict[str, Any]:
+    status: str | None = None
+) -> dict[str, Any]:
     """
     Get a list of properties with optional filtering.
-    
+
     Args:
         limit: Maximum number of properties to return (default: 50)
         offset: Number of properties to skip (default: 0)
         status: Filter by property status (e.g., "Active", "Inactive")
     """
     client = get_client()
-    
+
     params = {"limit": limit, "offset": offset}
     if status:
         params["status"] = status
-    
+
     try:
         response = await client.get("/properties", params=params)
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Retrieved {limit} properties (offset: {offset})"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -310,25 +311,25 @@ async def get_properties(
 
 
 @mcp.tool()
-async def get_property_by_id(ctx: Context, property_id: int) -> Dict[str, Any]:
+async def get_property_by_id(ctx: Context, property_id: int) -> dict[str, Any]:
     """
     Get detailed information about a specific property.
-    
+
     Args:
         property_id: The unique ID of the property
     """
     client = get_client()
-    
+
     try:
         response = await client.get(f"/properties/{property_id}")
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Retrieved property {property_id}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -341,14 +342,14 @@ async def get_bookings(
     ctx: Context,
     limit: int = 50,
     offset: int = 0,
-    property_id: Optional[int] = None,
-    status: Optional[str] = None,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-) -> Dict[str, Any]:
+    property_id: int | None = None,
+    status: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None
+) -> dict[str, Any]:
     """
     Get bookings with optional filtering.
-    
+
     Args:
         limit: Maximum number of bookings to return
         offset: Number of bookings to skip
@@ -358,7 +359,7 @@ async def get_bookings(
         end_date: Filter bookings until this date (YYYY-MM-DD)
     """
     client = get_client()
-    
+
     params = {"limit": limit, "offset": offset}
     if property_id:
         params["property_id"] = property_id
@@ -368,17 +369,17 @@ async def get_bookings(
         params["start_date"] = start_date
     if end_date:
         params["end_date"] = end_date
-    
+
     try:
         response = await client.get("/bookings", params=params)
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Retrieved bookings with filters: {params}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -402,10 +403,10 @@ async def create_booking(
     currency_code: str = "USD",
     status: str = "Booked",
     source_text: str = "MCP API"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Create a new booking.
-    
+
     Args:
         property_id: The property ID for the booking
         room_type_id: The room type ID within the property
@@ -422,7 +423,7 @@ async def create_booking(
         source_text: Source description (default: "MCP API")
     """
     client = get_client()
-    
+
     booking_data = {
         "guest": {
             "name": guest_name,
@@ -447,17 +448,17 @@ async def create_booking(
             }
         ]
     }
-    
+
     try:
         response = await client.post("/reservation/booking", json=booking_data)
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Created booking for {guest_name} at property {property_id}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -469,13 +470,13 @@ async def create_booking(
 async def get_calendar(
     ctx: Context,
     property_id: int,
-    room_type_id: Optional[int] = None,
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-) -> Dict[str, Any]:
+    room_type_id: int | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None
+) -> dict[str, Any]:
     """
     Get calendar/availability information for a property.
-    
+
     Args:
         property_id: The property ID
         room_type_id: Optional room type ID within the property
@@ -483,7 +484,7 @@ async def get_calendar(
         end_date: End date for calendar (YYYY-MM-DD)
     """
     client = get_client()
-    
+
     params = {"HouseId": property_id}
     if room_type_id:
         params["RoomTypeId"] = room_type_id
@@ -491,17 +492,17 @@ async def get_calendar(
         params["StartDate"] = start_date
     if end_date:
         params["EndDate"] = end_date
-    
+
     try:
         response = await client.get("/rates/calendar", params=params)
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Retrieved calendar for property {property_id}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -510,25 +511,25 @@ async def get_calendar(
 
 
 @mcp.tool()
-async def get_booking_by_id(ctx: Context, booking_id: int) -> Dict[str, Any]:
+async def get_booking_by_id(ctx: Context, booking_id: int) -> dict[str, Any]:
     """
     Get detailed information about a specific booking.
-    
+
     Args:
         booking_id: The unique ID of the booking
     """
     client = get_client()
-    
+
     try:
         response = await client.get(f"/bookings/{booking_id}")
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Retrieved booking {booking_id}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
@@ -541,35 +542,35 @@ async def update_booking_status(
     ctx: Context,
     booking_id: int,
     status: str
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Update the status of an existing booking.
-    
+
     Args:
         booking_id: The unique ID of the booking
         status: New status (e.g., "Booked", "Cancelled", "CheckedIn", "CheckedOut")
     """
     client = get_client()
-    
+
     try:
         # First get the current booking data
         get_response = await client.get(f"/bookings/{booking_id}")
         get_response.raise_for_status()
         booking_data = get_response.json()
-        
+
         # Update only the status
         booking_data["status"] = status
-        
+
         # Send the update
         response = await client.put(f"/bookings/{booking_id}", json=booking_data)
         response.raise_for_status()
-        
+
         return {
             "success": True,
             "data": response.json(),
             "message": f"Updated booking {booking_id} status to {status}"
         }
-        
+
     except httpx.HTTPStatusError as e:
         error_msg = await handle_api_error(e.response)
         return {"success": False, "error": error_msg}
