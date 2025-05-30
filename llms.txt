@@ -1,0 +1,167 @@
+# Lodgify MCP Server - LLM Development Guide
+
+This document provides guidance for LLMs working on the Lodgify MCP Server project.
+
+## Project Overview
+
+This is a Model Context Protocol (MCP) server for the Lodgify vacation rental API. The server provides tools for managing properties, bookings, and calendar data through the Lodgify platform.
+
+## Architecture
+
+- **Main Server**: `lodgify_server.py` - FastMCP-based MCP server implementation
+- **Entry Point**: `entrypoint.py` - CLI interface with multiple operation modes
+- **Docker**: Containerized deployment with multi-stage builds
+- **CI/CD**: GitHub Actions for automated testing and container publishing
+
+## Key Files
+
+### Core Implementation
+- `lodgify_server.py` - Main MCP server with 8 tools for Lodgify API interactions
+- `entrypoint.py` - CLI entry point supporting info/test/server modes
+- `main.py` - Simple main function for direct execution
+
+### Configuration
+- `pyproject.toml` - Python project configuration with dependencies and tool settings
+- `docker-compose.yml` - Docker Compose setup for easy deployment
+- `Dockerfile` - Multi-stage Docker build with health checks
+- `.env.example` - Environment variable template
+
+### Workflows
+- `.github/workflows/docker.yml` - Docker build and publish workflow
+- `.github/workflows/test.yml` - Testing and linting workflow
+
+## MCP Tools Implemented
+
+1. `get_properties_summary` - List all properties with basic information
+2. `get_property_details` - Get detailed property information by ID
+3. `get_bookings_summary` - List bookings with filtering options
+4. `list_properties` - Alternative property listing tool
+5. `get_property_by_id` - Get specific property details
+6. `list_bookings` - Alternative booking listing tool
+7. `create_booking` - Create new bookings
+8. `get_calendar` - Get property availability/calendar data
+9. `get_booking_by_id` - Get specific booking details
+10. `update_booking_status` - Update booking status
+
+## Code Quality Standards
+
+### Linting and Formatting
+- **Ruff**: Used for linting and formatting (configured in pyproject.toml)
+- **MyPy**: Type checking (configured to allow failures during development)
+- All code must pass ruff checks before merging
+
+### Type Annotations
+- All functions must have proper type annotations
+- Use modern type hints: `dict` instead of `Dict`, `list` instead of `List`
+- Use union types: `str | None` instead of `Optional[str]`
+
+### Error Handling
+- No bare `except:` statements - always specify exception types
+- Use HTTP status code constants instead of magic numbers
+- Proper async/await patterns for HTTP operations
+
+## Development Workflow
+
+### Local Development
+1. Ensure Python 3.10+ and `uv` package manager
+2. Run `uv sync` to install dependencies
+3. Set `LODGIFY_API_KEY` environment variable
+4. Test with `python lodgify_server.py`
+
+### Docker Development
+1. Test locally: `docker build -t test .`
+2. Use modes: `--mode info|test|server`
+3. Docker Compose for full stack: `docker-compose up -d server`
+
+### Testing
+- Use `--mode test` to validate API connectivity
+- Use `--mode info` to check configuration
+- Use `--mode server` for MCP client connections
+
+## Common Tasks
+
+### Adding New MCP Tools
+1. Add tool function to `lodgify_server.py`
+2. Ensure proper type annotations
+3. Add error handling with appropriate HTTP status codes
+4. Test with Docker build
+5. Update documentation if needed
+
+### Fixing Linting Issues
+1. Run `uv run ruff check` to see issues
+2. Run `uv run ruff format` to auto-format
+3. Fix remaining issues manually
+4. Verify with `uv run ruff check`
+
+### Container Issues
+1. Check logs: `docker logs <container_name>`
+2. Test API key: `docker run --rm -e LODGIFY_API_KEY=key image --mode test`
+3. Validate config: `docker run --rm -e LODGIFY_API_KEY=key image --mode info`
+
+## API Integration
+
+### Lodgify API
+- Base URL: `https://api.lodgify.com/v1`
+- Authentication: Bearer token via `LODGIFY_API_KEY`
+- All requests use `httpx` async client
+- Proper error handling for HTTP 401, 404, 500 responses
+
+### HTTP Status Constants
+Use defined constants in code:
+- `HTTP_OK = 200`
+- `HTTP_UNAUTHORIZED = 401`
+- `HTTP_NOT_FOUND = 404`
+- `HTTP_INTERNAL_SERVER_ERROR = 500`
+
+## Deployment
+
+### GitHub Container Registry
+- Images automatically built on push to main/tags
+- Available at: `ghcr.io/shanephall/lodgify-mcp-server:latest`
+- Multi-platform builds: AMD64, ARM64
+
+### Environment Variables
+- `LODGIFY_API_KEY` - Required for all operations
+- Provide via Docker: `-e LODGIFY_API_KEY=value`
+- Or via docker-compose with `.env` file
+
+## Troubleshooting
+
+### Common Issues
+1. **Import errors**: Check Python version alignment in Dockerfile vs .python-version
+2. **API connectivity**: Verify LODGIFY_API_KEY is valid and has permissions
+3. **MCP communication**: Ensure proper stdin/stdout handling in server mode
+4. **Container health**: Health checks validate application startup
+
+### Debug Commands
+```bash
+# Test API connectivity
+docker run --rm -e LODGIFY_API_KEY=key image --mode test
+
+# Check configuration
+docker run --rm -e LODGIFY_API_KEY=key image --mode info
+
+# View container logs
+docker logs <container_name>
+```
+
+## Best Practices
+
+1. **Always test changes with Docker** before committing
+2. **Use proper async patterns** for all HTTP operations
+3. **Handle errors gracefully** with informative messages
+4. **Follow type annotation standards** throughout codebase
+5. **Keep Docker images minimal** and secure
+6. **Use environment variables** for configuration, never hardcode secrets
+7. **Test all three modes** (info, test, server) after changes
+8. **Update documentation** for significant changes
+
+## Current Status
+
+✅ All major containerization issues resolved
+✅ Complete MCP server implementation with 8 tools
+✅ GitHub Actions CI/CD workflows functional
+✅ Code quality tools configured and passing
+✅ Multi-mode operation support
+✅ Comprehensive error handling
+✅ Type annotations throughout codebase
