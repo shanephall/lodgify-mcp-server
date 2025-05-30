@@ -5,26 +5,47 @@ A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provi
 ## Quick Start
 
 1. **Get the Docker image:**
+
    ```bash
    docker pull ghcr.io/shanephall/lodgify-mcp-server:latest
    ```
 
 2. **Test your API key:**
+
    ```bash
+   # Single line (works on all platforms)
+   docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
+   
+   # Multi-line for Linux/macOS/WSL
    docker run --rm -e LODGIFY_API_KEY=your_api_key_here \
+     ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
+   
+   # Multi-line for Windows PowerShell
+   docker run --rm -e LODGIFY_API_KEY=your_api_key_here `
      ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
    ```
 
 3. **Run the MCP server:**
+
    ```bash
+   # Single line (works on all platforms)
+   docker run -d --name lodgify-mcp-server -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-mcp-server:latest --mode server
+   
+   # Multi-line for Linux/macOS/WSL
    docker run -d --name lodgify-mcp-server \
      -e LODGIFY_API_KEY=your_api_key_here \
+     ghcr.io/shanephall/lodgify-mcp-server:latest --mode server
+   
+   # Multi-line for Windows PowerShell  
+   docker run -d --name lodgify-mcp-server `
+     -e LODGIFY_API_KEY=your_api_key_here `
      ghcr.io/shanephall/lodgify-mcp-server:latest --mode server
    ```
 
 ## Using Docker Compose
 
 1. Clone and setup:
+
    ```bash
    git clone https://github.com/shanephall/lodgify-mcp-server.git
    cd lodgify-mcp-server
@@ -33,6 +54,7 @@ A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provi
    ```
 
 2. Start the server:
+
    ```bash
    docker-compose up -d server
    ```
@@ -48,6 +70,7 @@ The server provides these tools for LLM interactions:
 ## Configuration
 
 Set your Lodgify API key as an environment variable:
+
 ```bash
 export LODGIFY_API_KEY=your_api_key_here
 ```
