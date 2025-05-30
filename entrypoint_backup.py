@@ -20,8 +20,7 @@ def test_api_connection():  # noqa: PLR0911
     print("Testing Lodgify API connection...", file=sys.stderr)
     try:
         import httpx
-        api_key = os.getenv("LODGIFY_API_KEY")
-        if not api_key:
+        api_key = os.getenv("LODGIFY_API_KEY")        if not api_key:
             print("❌ Error: LODGIFY_API_KEY not found", file=sys.stderr)
             print("   Please set the LODGIFY_API_KEY environment variable", file=sys.stderr)
             return False
@@ -50,32 +49,32 @@ def test_api_connection():  # noqa: PLR0911
                 print(f"   Found {count} properties in account", file=sys.stderr)
             return True
         elif response.status_code == HTTP_UNAUTHORIZED:
-            print("❌ API connection failed: Invalid API key", file=sys.stderr)
-            print("   Please check your LODGIFY_API_KEY is correct", file=sys.stderr)
+            print("❌ API connection failed: Invalid API key")
+            print("   Please check your LODGIFY_API_KEY is correct")
             return False
         elif response.status_code == HTTP_FORBIDDEN:
-            print("❌ API connection failed: Access forbidden", file=sys.stderr)
-            print("   Please check your API key permissions", file=sys.stderr)
+            print("❌ API connection failed: Access forbidden")
+            print("   Please check your API key permissions")
             return False
         elif response.status_code >= HTTP_SERVER_ERROR:
-            print(f"❌ API connection failed: Server error ({response.status_code})", file=sys.stderr)
-            print("   Lodgify API appears to be having issues", file=sys.stderr)
+            print(f"❌ API connection failed: Server error ({response.status_code})")
+            print("   Lodgify API appears to be having issues")
             return False
         else:
-            print(f"❌ API connection failed with status {response.status_code}", file=sys.stderr)
+            print(f"❌ API connection failed with status {response.status_code}")
             try:
                 error_data = response.json()
                 if isinstance(error_data, dict) and 'message' in error_data:
-                    print(f"   Error: {error_data['message']}", file=sys.stderr)
+                    print(f"   Error: {error_data['message']}")
             except Exception:
-                print(f"   Response: {response.text[:200]}...", file=sys.stderr)
+                print(f"   Response: {response.text[:200]}...")
             return False
     except httpx.TimeoutException:
-        print("❌ API connection error: Request timed out", file=sys.stderr)
-        print("   Please check your internet connection", file=sys.stderr)
+        print("❌ API connection error: Request timed out")
+        print("   Please check your internet connection")
         return False
     except Exception as e:
-        print(f"❌ API connection error: {e}", file=sys.stderr)
+        print(f"❌ API connection error: {e}")
         return False
 
 def run_mcp_server():
@@ -88,15 +87,15 @@ def run_mcp_server():
             sys.exit(1)
 
         from lodgify_server import mcp
-        print("🚀 Starting Lodgify MCP Server...", file=sys.stderr)
-        print("📡 Server is ready to accept MCP protocol messages via stdin/stdout", file=sys.stderr)
-        print("🔗 Connect this server to an MCP client like Claude Desktop", file=sys.stderr)
+        print("🚀 Starting Lodgify MCP Server...")
+        print("📡 Server is ready to accept MCP protocol messages via stdin/stdout")
+        print("🔗 Connect this server to an MCP client like Claude Desktop")
 
         # Set up proper signal handling for graceful shutdown
         import signal
 
         def signal_handler(signum, frame):
-            print(f"\n🛑 Received signal {signum}, shutting down gracefully...", file=sys.stderr)
+            print(f"\n🛑 Received signal {signum}, shutting down gracefully...")
             sys.exit(0)
 
         signal.signal(signal.SIGINT, signal_handler)
@@ -106,7 +105,7 @@ def run_mcp_server():
         mcp.run()
 
     except KeyboardInterrupt:
-        print("\n🛑 Server interrupted by user", file=sys.stderr)
+        print("\n🛑 Server interrupted by user")
         sys.exit(0)
     except Exception as e:
         print(f"❌ Server error: {e}", file=sys.stderr)
@@ -114,20 +113,20 @@ def run_mcp_server():
 
 def show_info():
     """Show information about the MCP server."""
-    print("🏨 Lodgify MCP Server", file=sys.stderr)
-    print("=" * 40, file=sys.stderr)
-    print("📋 This is a Model Context Protocol (MCP) server for the Lodgify API.", file=sys.stderr)
-    print("🏨 It provides tools and resources for managing vacation rental properties.", file=sys.stderr)
+    print("🏨 Lodgify MCP Server")
+    print("=" * 40)
+    print("📋 This is a Model Context Protocol (MCP) server for the Lodgify API.")
+    print("🏨 It provides tools and resources for managing vacation rental properties.")
 
     api_key = os.getenv('LODGIFY_API_KEY')
     if api_key:
         masked_key = api_key[:API_KEY_MASK_LENGTH] + '*' * (len(api_key) - API_KEY_MASK_LENGTH) if len(api_key) > API_KEY_MASK_LENGTH else '*' * len(api_key)
-        print(f"🔑 API key configured: Yes ({masked_key})", file=sys.stderr)
+        print(f"🔑 API key configured: Yes ({masked_key})")
     else:
-        print("🔑 API key configured: ❌ No", file=sys.stderr)
+        print("🔑 API key configured: ❌ No")
 
-    print("\n📖 To use this server, connect it to an MCP client like Claude Desktop.", file=sys.stderr)
-    print("🔌 The server communicates via JSON-RPC over stdin/stdout.", file=sys.stderr)
+    print("\n📖 To use this server, connect it to an MCP client like Claude Desktop.")
+    print("🔌 The server communicates via JSON-RPC over stdin/stdout.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -157,9 +156,9 @@ if __name__ == "__main__":
 
     if args.debug:
         os.environ["PYTHONPATH"] = "/app"
-        print("Debug mode enabled", file=sys.stderr)
-        print(f"API key set: {'Yes' if args.api_key else 'No'}", file=sys.stderr)
-        print(f"Mode: {args.mode}", file=sys.stderr)
+        print("Debug mode enabled")
+        print(f"API key set: {'Yes' if args.api_key else 'No'}")
+        print(f"Mode: {args.mode}")
 
     # Validate API key for modes that need it
     if args.mode in ["server", "test"] and not args.api_key:

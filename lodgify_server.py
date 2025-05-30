@@ -11,6 +11,7 @@ Usage:
 """
 
 import os
+import sys
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -121,8 +122,7 @@ async def app_lifespan_with_global(server: FastMCP) -> AsyncIterator[AppContext]
 
     # Create HTTP client with proper headers
     _client = httpx.AsyncClient(
-        base_url=config.base_url,
-        headers={
+        base_url=config.base_url,        headers={
             "X-ApiKey": config.api_key,
             "Accept": "application/json",
             "Content-Type": "application/json"
@@ -132,12 +132,12 @@ async def app_lifespan_with_global(server: FastMCP) -> AsyncIterator[AppContext]
 
     try:
         # Test API connection
-        print("Testing Lodgify API connection...")
+        print("Testing Lodgify API connection...", file=sys.stderr)
         response = await _client.get("/properties", params={"limit": 1})
         if response.status_code == HTTP_OK:
-            print("Lodgify API connection successful")
+            print("Lodgify API connection successful", file=sys.stderr)
         else:
-            print(f"API test returned status {response.status_code}")
+            print(f"API test returned status {response.status_code}", file=sys.stderr)
 
         yield AppContext(config=config, client=_client)
     finally:
