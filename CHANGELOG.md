@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-05-30
+
 ### Fixed
 
 - Docker containerization issues resolved completely
@@ -16,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Health check commands updated to use correct Python executable
 - API key validation with clear error messages
 - Docker Compose configuration improved with proper networking and logging
+- **Claude Desktop Docker configuration**: Fixed environment variable passing for Docker containers
+- **API key errors**: Resolved "API key is required for this mode" errors in Claude Desktop Docker setups
 
 ### Added
 

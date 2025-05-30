@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "lodgify-api": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "LODGIFY_API_KEY=your_lodgify_api_key_here",
+        "ghcr.io/shanephall/lodgify-mcp-server:latest",
+        "--mode", "server"
+      ]
+    }
+  }
+}
