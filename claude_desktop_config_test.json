@@ -1,12 +1,16 @@
 {
   "globalShortcut": "Alt+Ctrl+Space",
   "mcpServers": {
-    "lodgify-api": {
+    "lodgify-local": {
       "command": "C:\\Users\\shane\\Documents\\GitHub\\lodgify-mcp-server\\.venv\\Scripts\\python.exe",
       "args": ["C:\\Users\\shane\\Documents\\GitHub\\lodgify-mcp-server\\entrypoint.py", "--mode", "server"],
       "env": {
         "LODGIFY_API_KEY": "5DwrEIDrOhVU33OcOqrEMbitIBtYYgwDDhzVCc6fsVH3bJk3dO2y2rJR9P1XTi53"
       }
+    },    "lodgify-docker": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "-e", "LODGIFY_API_KEY=5DwrEIDrOhVU33OcOqrEMbitIBtYYgwDDhzVCc6fsVH3bJk3dO2y2rJR9P1XTi53", "lodgify-mcp-fixed", "--mode", "server"]
     }
+
   }
 }
