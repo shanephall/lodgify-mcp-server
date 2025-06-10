@@ -1,7 +1,7 @@
 services:
   server:
     build: .
-    # Or use: image: ghcr.io/shanephall/lodgify-mcp-server:latest
+    # Or use: image: ghcr.io/fast-transients/lodgify-mcp-server:latest
     environment:
       - LODGIFY_API_KEY=${LODGIFY_API_KEY}
     command: ["--mode", "server"]
@@ -11,7 +11,7 @@ services:
     
   test:
     build: .
-    # Or use: image: ghcr.io/shanephall/lodgify-mcp-server:latest
+    # Or use: image: ghcr.io/fast-transients/lodgify-mcp-server:latest
     environment:
       - LODGIFY_API_KEY=${LODGIFY_API_KEY}
     command: ["--mode", "test"]

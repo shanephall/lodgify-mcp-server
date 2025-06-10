@@ -1,6 +1,6 @@
 [project]
 name = "lodgify-mcp-server"
-version = "1.0.0"
+version = "0.2.0"
 description = "A Model Context Protocol server for interacting with the Lodgify vacation rental API"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -28,15 +28,18 @@ dev = [
     "mypy>=1.0.0",
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-mock>=3.10.0",
+    "httpx-mock>=0.7.0",
+    "pytest-cov>=4.0.0",
 ]
 
 [project.scripts]
 lodgify-mcp-server = "lodgify_server:main"
 
 [project.urls]
-Homepage = "https://github.com/shanephall/lodgify-mcp-server"
-Repository = "https://github.com/shanephall/lodgify-mcp-server"
-Issues = "https://github.com/shanephall/lodgify-mcp-server/issues"
+Homepage = "https://github.com/fast-transients/lodgify-mcp-server"
+Repository = "https://github.com/fast-transients/lodgify-mcp-server"
+Issues = "https://github.com/fast-transients/lodgify-mcp-server/issues"
 
 [build-system]
 requires = ["hatchling"]

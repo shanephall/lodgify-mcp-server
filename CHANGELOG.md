@@ -1,12 +1,21 @@
 # Changelog
 
-## [1.1.0] - 2025-06-10
+## [0.2.0] - 2025-06-10
 
 ### Changed
+- **Version strategy** - Updated to 0.2.0 to reflect beta-ready status with comprehensive feature set
+- **Development status** - Upgraded from Alpha to Beta classification
+- **Repository migration** - Updated all references from personal account (shanephall) to business account (fast-transients)
 - **Simplified repository structure** - Removed redundant files and documentation
 - **Streamlined README** - Consolidated setup instructions into concise format
 - **Simplified Docker Compose** - Removed unnecessary complexity
 - **Cleaned up build configuration** - Updated to reflect actual file structure
+- **Documentation organization** - Moved project notes to docs/ folder (excluded from git)
+
+### Fixed
+- Docker compose YAML formatting issues
+- Repository URL references across all files
+- Docker image registry paths
 
 ### Removed
 - Multiple duplicate entrypoint files (`entrypoint_backup.py`, `entrypoint_fixed.py`)
@@ -15,19 +24,14 @@
 - Test configuration files no longer needed
 - Cache directories and temporary files
 
-## [1.0.0] - 2025-05-30
-
-### Fixed
-- Docker containerization and API key validation issues
-- Claude Desktop Docker configuration environment variable passing
-- MCP protocol communication in containerized environment
+## [0.1.0] - 2025-05-30
 
 ### Added
-- Multi-mode entrypoint script with info/test/server modes
-- Enhanced error handling and user feedback
-- Docker health checks and proper logging
-
-## [0.1.0] - 2025-05-29
+- Initial beta release of Lodgify MCP Server
+- Complete Lodgify API integration with MCP protocol
+- Property and booking management tools
+- Docker containerization support
+- GitHub Actions CI/CD pipeline
 
 ### Added
 - Initial Lodgify MCP Server implementation

@@ -12,11 +12,10 @@ Add this configuration to your Claude Desktop config file:
 {
   "mcpServers": {
     "lodgify-api": {
-      "command": "docker",
-      "args": [
+      "command": "docker",      "args": [
         "run", "-i", "--rm", 
         "-e", "LODGIFY_API_KEY=your_api_key_here",
-        "ghcr.io/shanephall/lodgify-mcp-server:latest",
+        "ghcr.io/fast-transients/lodgify-mcp-server:latest",
         "--mode", "server"
       ]
     }
@@ -33,7 +32,7 @@ Add this configuration to your Claude Desktop config file:
 
 ```powershell
 # Test Docker image with your API key
-docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
+docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/fast-transients/lodgify-mcp-server:latest --mode test
 ```
 
 ## Available Tools
@@ -45,7 +44,7 @@ docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-
 ## Local Development
 
 ```powershell
-git clone https://github.com/shanephall/lodgify-mcp-server.git
+git clone https://github.com/fast-transients/lodgify-mcp-server.git
 cd lodgify-mcp-server
 uv sync
 $env:LODGIFY_API_KEY="your_api_key_here"
@@ -55,7 +54,7 @@ python lodgify_server.py
 ## Docker Compose
 
 ```powershell
-git clone https://github.com/shanephall/lodgify-mcp-server.git
+git clone https://github.com/fast-transients/lodgify-mcp-server.git
 cd lodgify-mcp-server
 Copy-Item .env.example .env
 # Edit .env with your LODGIFY_API_KEY
@@ -82,4 +81,4 @@ docker-compose up -d server
 
 - [Lodgify API Docs](https://docs.lodgify.com/)
 - [MCP Protocol](https://modelcontextprotocol.io/)
-- [GitHub Issues](https://github.com/shanephall/lodgify-mcp-server/issues)
+- [GitHub Issues](https://github.com/fast-transients/lodgify-mcp-server/issues)
