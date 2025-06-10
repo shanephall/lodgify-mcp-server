@@ -19,7 +19,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --no-dev --no-install-project
 
 # Copy all application files
-COPY README.md lodgify_server.py main.py entrypoint.py ./
+COPY README.md lodgify_server.py entrypoint.py ./
 
 # Add uv's virtual environment to PATH
 ENV PATH="/app/.venv/bin:$PATH"
