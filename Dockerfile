@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir uv
 # Copy dependency files first for better Docker layer caching
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies using uv (install dependencies only, not the package itself)
-RUN uv sync --no-dev --no-install-project
+# Create virtual environment and install dependencies using uv
+RUN uv venv && uv sync --no-dev --no-install-project
 
 # Copy all application files
 COPY README.md lodgify_server.py entrypoint.py ./
