@@ -241,7 +241,7 @@ async def get_recent_bookings() -> str:
     client = get_client()
 
     try:
-        response = await client.get("/bookings", params={"limit": 20})
+        response = await client.get("/reservations/bookings", params={"size": 20})
         response.raise_for_status()
 
         bookings_data = response.json()
@@ -259,7 +259,7 @@ async def get_recent_bookings() -> str:
             summary.append(f"- **Arrival**: {booking.get('arrival', 'N/A')}")
             summary.append(f"- **Departure**: {booking.get('departure', 'N/A')}")
             summary.append(f"- **Status**: {booking.get('status', 'N/A')}")
-            summary.append(f"- **Total**: {booking.get('total', 'N/A')} {booking.get('currency_code', '')}")
+            summary.append(f"- **Total**: {booking.get('total_amount', 'N/A')} {booking.get('currency_code', '')}")
             summary.append("")
 
         return "\n".join(summary)
@@ -340,8 +340,8 @@ async def get_property_by_id(ctx: Context, property_id: int) -> dict[str, Any]:
 @mcp.tool()
 async def get_bookings(
     ctx: Context,
-    limit: int = 50,
-    offset: int = 0,
+    size: int = 50,
+    page: int = 1,
     property_id: int | None = None,
     status: str | None = None,
     start_date: str | None = None,
@@ -351,16 +351,16 @@ async def get_bookings(
     Get bookings with optional filtering.
 
     Args:
-        limit: Maximum number of bookings to return
-        offset: Number of bookings to skip
+        size: Maximum number of bookings to return
+        page: Number of page to get
         property_id: Filter by specific property ID
         status: Filter by booking status (e.g., "Booked", "Cancelled")
         start_date: Filter bookings from this date (YYYY-MM-DD)
     end_date: Filter bookings until this date (YYYY-MM-DD)
     """
     client = get_client()
-
-    params = {"limit": limit, "offset": offset}
+    
+    params = {"size": size, "page": page }
     if property_id:
         params["property_id"] = property_id
     if status:
@@ -371,7 +371,7 @@ async def get_bookings(
         params["end_date"] = end_date
 
     try:
-        response = await client.get("/bookings", params=params)
+        response = await client.get("/reservations/bookings", params=params)
         response.raise_for_status()
 
         return {
@@ -521,7 +521,7 @@ async def get_booking_by_id(ctx: Context, booking_id: int) -> dict[str, Any]:
     client = get_client()
 
     try:
-        response = await client.get(f"/bookings/{booking_id}")
+        response = await client.get(f"/reservations/bookings/{booking_id}")
         response.raise_for_status()
 
         return {
@@ -554,7 +554,7 @@ async def update_booking_status(
 
     try:
         # First get the current booking data
-        get_response = await client.get(f"/bookings/{booking_id}")
+        get_response = await client.get(f"/reservations/bookings/{booking_id}")
         get_response.raise_for_status()
         booking_data = get_response.json()
 
@@ -562,7 +562,7 @@ async def update_booking_status(
         booking_data["status"] = status
 
         # Send the update
-        response = await client.put(f"/bookings/{booking_id}", json=booking_data)
+        response = await client.put(f"/reservations/bookings/{booking_id}", json=booking_data)
         response.raise_for_status()
 
         return {
