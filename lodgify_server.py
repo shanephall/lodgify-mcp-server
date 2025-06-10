@@ -359,7 +359,7 @@ async def get_bookings(
     end_date: Filter bookings until this date (YYYY-MM-DD)
     """
     client = get_client()
-    
+
     params = {"size": size, "page": page }
     if property_id:
         params["property_id"] = property_id
