@@ -31,7 +31,7 @@ Add this configuration to your Claude Desktop config file:
 
 ### Test Your Setup
 
-```bash
+```powershell
 # Test Docker image with your API key
 docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-mcp-server:latest --mode test
 ```
@@ -44,20 +44,20 @@ docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/shanephall/lodgify-
 
 ## Local Development
 
-```bash
+```powershell
 git clone https://github.com/shanephall/lodgify-mcp-server.git
 cd lodgify-mcp-server
 uv sync
-export LODGIFY_API_KEY=your_api_key_here
+$env:LODGIFY_API_KEY="your_api_key_here"
 python lodgify_server.py
 ```
 
 ## Docker Compose
 
-```bash
+```powershell
 git clone https://github.com/shanephall/lodgify-mcp-server.git
 cd lodgify-mcp-server
-cp .env.example .env
+Copy-Item .env.example .env
 # Edit .env with your LODGIFY_API_KEY
 docker-compose up -d server
 ```
