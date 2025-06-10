@@ -20,7 +20,8 @@ def test_api_connection():  # noqa: PLR0911
     print("Testing Lodgify API connection...", file=sys.stderr)
     try:
         import httpx
-        api_key = os.getenv("LODGIFY_API_KEY")        if not api_key:
+        api_key = os.getenv("LODGIFY_API_KEY")
+        if not api_key:
             print("❌ Error: LODGIFY_API_KEY not found", file=sys.stderr)
             print("   Please set the LODGIFY_API_KEY environment variable", file=sys.stderr)
             return False

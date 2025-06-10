@@ -356,7 +356,7 @@ async def get_bookings(
         property_id: Filter by specific property ID
         status: Filter by booking status (e.g., "Booked", "Cancelled")
         start_date: Filter bookings from this date (YYYY-MM-DD)
-        end_date: Filter bookings until this date (YYYY-MM-DD)
+    end_date: Filter bookings until this date (YYYY-MM-DD)
     """
     client = get_client()
 
