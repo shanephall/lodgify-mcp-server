@@ -34,7 +34,9 @@ jobs:
       run: uv run ruff check .
     
     - name: Type check with mypy
-      run: uv run mypy lodgify_server.py entrypoint.py || true
+      run: |
+        uv run mypy lodgify_server.py entrypoint.py > mypy_errors.log || echo "mypy exited with errors"
+        cat mypy_errors.log
     
     - name: Test server import
       run: uv run python -c "import lodgify_server; print('✓ lodgify_server import successful')"
