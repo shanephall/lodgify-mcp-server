@@ -35,7 +35,7 @@ Add this configuration to your Claude Desktop config file:
       "command": "uvx",
       "args": ["lodgify-mcp-server"],
       "env": {
-        "LODGIFY_API_KEY": "your-api-key-here"
+        "LODGIFY_API_KEY": "your_api_key_here"
       }
     }
   }
