@@ -32,10 +32,5 @@
 - Property and booking management tools
 - Docker containerization support
 - GitHub Actions CI/CD pipeline
-
-### Added
 - Initial Lodgify MCP Server implementation
-- Complete Lodgify API integration with MCP protocol
-- Property and booking management tools
-- Docker containerization support
-- GitHub Actions CI/CD pipeline
+
