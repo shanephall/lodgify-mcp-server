@@ -2,6 +2,26 @@
 
 A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provides tools for managing properties, bookings, and calendar data.
 
+## Installation
+
+### Via mcp-get (Recommended)
+
+```bash
+npx @michaellatman/mcp-get@latest install lodgify
+```
+
+### Via uv (Direct)
+
+```bash
+uvx lodgify-mcp-server
+```
+
+### Manual Installation
+
+```bash
+uv add lodgify-mcp-server
+```
+
 ## Quick Start
 
 ### Claude Desktop Integration (Recommended)
@@ -11,8 +31,25 @@ Add this configuration to your Claude Desktop config file:
 ```json
 {
   "mcpServers": {
-    "lodgify-api": {
-      "command": "docker",      "args": [
+    "lodgify": {
+      "command": "uvx",
+      "args": ["lodgify-mcp-server"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**Alternative Docker configuration:**
+
+```json
+{
+  "mcpServers": {
+    "lodgify-docker": {
+      "command": "docker",
+      "args": [
         "run", "-i", "--rm", 
         "-e", "LODGIFY_API_KEY=your_api_key_here",
         "ghcr.io/fast-transients/lodgify-mcp-server:latest",
