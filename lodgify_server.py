@@ -63,12 +63,12 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[AppContext]:
 
     try:
         # Test API connection
-        server.info("Testing Lodgify API connection...")
+        server.info("Testing Lodgify API connection...")  # type: ignore[attr-defined]
         response = await client.get("/properties", params={"limit": 1})
         if response.status_code == HTTP_OK:
-            server.info("✅ Lodgify API connection successful")
+            server.info("✅ Lodgify API connection successful")  # type: ignore[attr-defined]
         else:
-            server.warning(f"⚠️ API test returned status {response.status_code}")
+            server.warning(f"⚠️ API test returned status {response.status_code}")  # type: ignore[attr-defined]
 
         yield AppContext(config=config, client=client)
     finally:
