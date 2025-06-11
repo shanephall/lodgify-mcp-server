@@ -50,4 +50,4 @@ jobs:
         " || true
 
     - name: Run tests
-      run: uv run pytest -q
+      run: uv run python -m pytest -q
