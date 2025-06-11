@@ -6,7 +6,7 @@
         "lodgify-mcp-server"
       ],
       "env": {
-        "LODGIFY_API_KEY": "your-api-key-here"
+        "LODGIFY_API_KEY": ""
       }
     }
   }
