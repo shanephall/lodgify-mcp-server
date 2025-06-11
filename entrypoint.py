@@ -15,7 +15,7 @@ HTTP_FORBIDDEN = 403
 HTTP_SERVER_ERROR = 500
 API_KEY_MASK_LENGTH = 8
 
-def test_api_connection():  # noqa: PLR0911
+def test_api_connection() -> bool:  # noqa: PLR0911
     """Test the Lodgify API connection."""
     print("Testing Lodgify API connection...", file=sys.stderr)
     try:
@@ -78,7 +78,7 @@ def test_api_connection():  # noqa: PLR0911
         print(f"❌ API connection error: {e}", file=sys.stderr)
         return False
 
-def run_mcp_server():
+def run_mcp_server() -> None:
     """Run the MCP server."""
     try:
         # Ensure we have an API key for server mode
@@ -95,8 +95,11 @@ def run_mcp_server():
         # Set up proper signal handling for graceful shutdown
         import signal
 
-        def signal_handler(signum, frame):
-            print(f"\n🛑 Received signal {signum}, shutting down gracefully...", file=sys.stderr)
+        def signal_handler(signum: int, frame: object) -> None:
+            print(
+                f"\n🛑 Received signal {signum}, shutting down gracefully...",
+                file=sys.stderr,
+            )
             sys.exit(0)
 
         signal.signal(signal.SIGINT, signal_handler)
@@ -112,7 +115,7 @@ def run_mcp_server():
         print(f"❌ Server error: {e}", file=sys.stderr)
         sys.exit(1)
 
-def show_info():
+def show_info() -> None:
     """Show information about the MCP server."""
     print("🏨 Lodgify MCP Server", file=sys.stderr)
     print("=" * 40, file=sys.stderr)

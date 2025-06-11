@@ -18,8 +18,8 @@ from dataclasses import dataclass
 from typing import Any
 
 import httpx
-from mcp.server.fastmcp import Context, FastMCP
-from mcp.server.fastmcp.prompts import base
+from mcp.server.fastmcp import Context, FastMCP  # type: ignore[import-not-found]
+from mcp.server.fastmcp.prompts import base  # type: ignore[import-not-found]
 
 # Constants
 HTTP_OK = 200
@@ -289,7 +289,7 @@ async def get_properties(
     """
     client = get_client()
 
-    params = {"limit": limit, "offset": offset}
+    params: dict[str, Any] = {"limit": limit, "offset": offset}
     if status:
         params["status"] = status
 
@@ -360,7 +360,7 @@ async def get_bookings(
     """
     client = get_client()
 
-    params = {"size": size, "page": page }
+    params: dict[str, Any] = {"size": size, "page": page }
     if property_id:
         params["property_id"] = property_id
     if status:
@@ -485,7 +485,7 @@ async def get_calendar(
     """
     client = get_client()
 
-    params = {"HouseId": property_id}
+    params: dict[str, Any] = {"HouseId": property_id}
     if room_type_id:
         params["RoomTypeId"] = room_type_id
     if start_date:
