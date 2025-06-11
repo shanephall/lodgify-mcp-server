@@ -625,5 +625,8 @@ def property_management_review() -> list[base.Message]:
     ]
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Run the Lodgify MCP server."""
     mcp.run()
+if __name__ == "__main__":
+    main()
