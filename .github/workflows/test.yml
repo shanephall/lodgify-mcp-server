@@ -48,3 +48,6 @@ jobs:
         import lodgify_server
         print('Server module loaded successfully')
         " || true
+
+    - name: Run tests
+      run: uv run python -m pytest -q
