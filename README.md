@@ -2,107 +2,12 @@
 
 A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provides tools for managing properties, bookings, and calendar data.
 
-## Installation
-
-### 🚀 Current Working Method
-
-**Local Installation** (Recommended until PyPI publishing is complete):
-
-```bash
-# Clone and install locally
-git clone https://github.com/Fast-Transients/lodgify-mcp-server.git
-cd lodgify-mcp-server
-uv sync
-
-# Test with your API key
-export LODGIFY_API_KEY="your_api_key_here"
-uv run python entrypoint.py --mode info
-```
-
-### 📖 Platform-Specific Guides
-
-- **Mac Users**: [Complete Mac Setup Guide](MAC_SETUP_GUIDE.md) - Step-by-step instructions
-- **Windows Users**: See local installation above, then use Windows config below
-
-### 🔮 Future Methods (Coming Soon)
-
-**Via mcp-get:**
-```bash
-npx @michaellatman/mcp-get@latest install lodgify
-```
-
-**Via uvx:**
-```bash
-uvx lodgify-mcp-server
-```
-
-#### Local Claude Desktop Configuration
-
-**Windows:**
-```json
-{
-  "mcpServers": {
-    "lodgify": {
-      "command": "uv",
-      "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
-      "env": {
-        "LODGIFY_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
-**Mac/Linux:**
-```json
-{
-  "mcpServers": {
-    "lodgify": {
-      "command": "uv",
-      "args": ["run", "--directory", "/path/to/lodgify-mcp-server", "python", "entrypoint.py"],
-      "env": {
-        "LODGIFY_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
 ## Claude Desktop Integration
 
-**Currently use local installation** (until PyPI publishing is complete):
+### 🚀 Recommended Method (uvx)
 
-**Windows:**
-```json
-{
-  "mcpServers": {
-    "lodgify": {
-      "command": "uv",
-      "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
-      "env": {
-        "LODGIFY_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
+Add this to your Claude Desktop configuration:
 
-**Mac/Linux:**
-```json
-{
-  "mcpServers": {
-    "lodgify": {
-      "command": "uv",
-      "args": ["run", "--directory", "/path/to/lodgify-mcp-server", "python", "entrypoint.py"],
-      "env": {
-        "LODGIFY_API_KEY": "your_api_key_here"
-      }
-    }
-  }
-}
-```
-
-**Future uvx method** (once published to PyPI):
 ```json
 {
   "mcpServers": {
@@ -117,34 +22,107 @@ uvx lodgify-mcp-server
 }
 ```
 
-**Alternative Docker configuration:**
+### Local Development Method
+
+If you're developing locally or prefer to run from source:
+
+**Windows:**
 
 ```json
 {
   "mcpServers": {
-    "lodgify-docker": {
-      "command": "docker",
-      "args": [
-        "run", "-i", "--rm", 
-        "-e", "LODGIFY_API_KEY=your_api_key_here",
-        "ghcr.io/fast-transients/lodgify-mcp-server:latest",
-        "--mode", "server"
-      ]
+    "lodgify": {
+      "command": "uv",
+      "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
     }
   }
 }
 ```
 
-**Config file locations:**
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+**Mac/Linux:**
 
-### Test Your Setup
+```json
+{
+  "mcpServers": {
+    "lodgify": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+### Config File Locations
+
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
+- **Linux:** `~/.config/Claude/claude_desktop_config.json`
+
+## Local Development
+
+Clone and set up the project locally:
+
+```bash
+git clone https://github.com/fast-transients/lodgify-mcp-server.git
+cd lodgify-mcp-server
+uv sync
+```
+
+Run the server:
+
+**Windows PowerShell:**
 
 ```powershell
-# Test Docker image with your API key
-docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/fast-transients/lodgify-mcp-server:latest --mode test
+$env:LODGIFY_API_KEY="your_api_key_here"
+uv run python entrypoint.py
+```
+
+**Mac/Linux:**
+
+```bash
+export LODGIFY_API_KEY="your_api_key_here"
+uv run python entrypoint.py
+```
+
+## Testing with MCP Inspector
+
+Test your setup using the MCP Inspector:
+
+**Windows PowerShell:**
+
+```powershell
+$env:LODGIFY_API_KEY="your_api_key_here"
+uvx @modelcontextprotocol/inspector lodgify-mcp-server
+```
+
+## Installation Methods
+
+### Coming Soon: mcp-get
+
+```bash
+npx @michaellatman/mcp-get@latest install lodgify
+```
+
+### Direct Installation (uvx)
+
+**Windows PowerShell:**
+
+```powershell
+$env:LODGIFY_API_KEY="your_api_key_here"
+uvx lodgify-mcp-server
+```
+
+**Mac/Linux:**
+
+```bash
+export LODGIFY_API_KEY="your_api_key_here"
+uvx lodgify-mcp-server
 ```
 
 ## Available Tools
@@ -153,49 +131,70 @@ docker run --rm -e LODGIFY_API_KEY=your_api_key_here ghcr.io/fast-transients/lod
 - **Bookings**: `get_bookings`, `get_booking_by_id`, `create_booking`, `update_booking_status`
 - **Calendar**: `get_calendar` (availability checking)
 
-## Local Development
-
-```powershell
-git clone https://github.com/fast-transients/lodgify-mcp-server.git
-cd lodgify-mcp-server
-uv sync
-$env:LODGIFY_API_KEY="your_api_key_here"
-python lodgify_server.py
-```
-
-## Docker Compose
-
-```powershell
-git clone https://github.com/fast-transients/lodgify-mcp-server.git
-cd lodgify-mcp-server
-Copy-Item .env.example .env
-# Edit .env with your LODGIFY_API_KEY
-docker-compose up -d server
-```
-
 ## Troubleshooting
+
+### Getting "LODGIFY_API_KEY environment variable is required" error?
+
+This means you need to set your API key before running the server:
+
+**Windows PowerShell:**
+
+```powershell
+$env:LODGIFY_API_KEY="your_actual_api_key_here"
+uvx lodgify-mcp-server
+```
+
+**Mac/Linux:**
+
+```bash
+export LODGIFY_API_KEY="your_actual_api_key_here"
+uvx lodgify-mcp-server
+```
 
 ### Getting "spawn uvx ENOENT" error?
 
-📋 **[Quick Fix Guide](QUICK_FIX_UVX_ERROR.md)** - Fix the uvx error by using local installation
+This means uvx is not installed or not in PATH. Install it:
 
-### Getting "spawn uv ENOENT" error?
+**Windows:**
 
-📋 **[Mac UV PATH Fix](MAC_UV_PATH_FIX.md)** - Fix PATH issues with uv command on Mac
-
-**"API key is required" error?** Make sure you're using `-e` flag in Docker:
-
-✅ **Correct:**
-
-```json
-"args": ["run", "-i", "--rm", "-e", "LODGIFY_API_KEY=your_key", "image", "--mode", "server"]
+```powershell
+# Install uv first, then uvx is included
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-❌ **Incorrect:**
+**Mac/Linux:**
 
-```json
-"env": {"LODGIFY_API_KEY": "your_key"}
+```bash
+# Install uv (includes uvx)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc  # or restart terminal
 ```
+
+**Alternative**: Use local installation instead:
+
+```bash
+git clone https://github.com/fast-transients/lodgify-mcp-server.git
+cd lodgify-mcp-server
+uv sync
+export LODGIFY_API_KEY="your_api_key_here"
+uv run python entrypoint.py
+```
+
+### Getting "spawn uv ENOENT" error on Mac?
+
+Claude Desktop can't find the `uv` command. Fix the PATH:
+
+```bash
+# Add to ~/.zshrc (or ~/.bashrc)
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Then restart Claude Desktop.
+
+### API key is required error?
+
+Make sure you've set your LODGIFY_API_KEY environment variable with a valid API key from your Lodgify account.
 
 ## Security
 

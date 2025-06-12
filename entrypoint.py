@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Entry point script for the Lodgify MCP Server Docker container.
+Entry point script for the Lodgify MCP Server.
 This provides a flexible way to start the server with different configurations.
 """
 
