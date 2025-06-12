@@ -38,11 +38,46 @@ Change `"command": "uvx"` to `"command": "uv"`:
 ```
 
 ## Quick Fix Steps
-1. Edit your Claude Desktop config file at: `~/Library/Application Support/Claude/claude_desktop_config.json`
-2. Change `"uvx"` to `"uv"` 
-3. Make sure your API key is set (replace `YOUR_ACTUAL_API_KEY_HERE`)
-4. Restart Claude Desktop completely
-5. Test by asking: "What Lodgify tools are available?"
+1. **First, make sure `uv` is in your PATH:**
+   ```bash
+   # Check if uv is available
+   which uv
+   
+   # If not found, add to PATH (choose your shell):
+   # For zsh (default on newer Macs):
+   echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
+   source ~/.zshrc
+   
+   # For bash:
+   echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
+   source ~/.bashrc
+   
+   # Test uv works
+   uv --version
+   ```
+
+2. Edit your Claude Desktop config file at: `~/Library/Application Support/Claude/claude_desktop_config.json`
+3. Change `"uvx"` to `"uv"` 
+4. Make sure your API key is set (replace `YOUR_ACTUAL_API_KEY_HERE`)
+5. Restart Claude Desktop completely
+6. Test by asking: "What Lodgify tools are available?"
+
+## Alternative: Use Full Path
+If PATH issues persist, use the full path to uv:
+
+```json
+{
+  "mcpServers": {
+    "lodgify": {
+      "command": "/Users/shanehall/.cargo/bin/uv",
+      "args": ["run", "--directory", "/Users/shanehall/mcp-servers/lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "YOUR_ACTUAL_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
 
 ## Why This Happens
 - `uvx lodgify-mcp-server` - would work once published to PyPI

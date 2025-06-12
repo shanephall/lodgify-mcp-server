@@ -179,6 +179,10 @@ docker-compose up -d server
 
 📋 **[Quick Fix Guide](QUICK_FIX_UVX_ERROR.md)** - Fix the uvx error by using local installation
 
+### Getting "spawn uv ENOENT" error?
+
+📋 **[Mac UV PATH Fix](MAC_UV_PATH_FIX.md)** - Fix PATH issues with uv command on Mac
+
 **"API key is required" error?** Make sure you're using `-e` flag in Docker:
 
 ✅ **Correct:**
