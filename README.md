@@ -197,6 +197,19 @@ docker-compose up -d server
 "env": {"LODGIFY_API_KEY": "your_key"}
 ```
 
+## Security
+
+After syncing dependencies with `uv sync`, run `pip-audit` to scan for known
+vulnerabilities:
+
+```bash
+uv sync
+pip-audit
+```
+
+This repository pins `starlette` to version 0.47.0 in `uv.lock` to address
+upstream advisories.
+
 ## Links
 
 - [Lodgify API Docs](https://docs.lodgify.com/)
