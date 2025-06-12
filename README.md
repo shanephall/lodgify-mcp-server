@@ -6,7 +6,7 @@ A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provi
 
 ### Quick Start for Mac Users
 
-📖 **[Complete Mac Setup Guide](docs/MAC_SETUP_GUIDE.md)** - Step-by-step instructions for beginners
+📖 **[Complete Mac Setup Guide](MAC_SETUP_GUIDE.md)** - Step-by-step instructions for beginners
 
 **Short version:**
 
