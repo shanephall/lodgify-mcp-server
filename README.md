@@ -98,14 +98,7 @@ Test your setup using the MCP Inspector:
 
 ```powershell
 $env:LODGIFY_API_KEY="your_api_key_here"
-uvx @modelcontextprotocol/inspector uvx lodgify-mcp-server
-```
-
-**Mac/Linux:**
-
-```bash
-export LODGIFY_API_KEY="your_api_key_here"
-uvx @modelcontextprotocol/inspector uvx lodgify-mcp-server
+uvx @modelcontextprotocol/inspector lodgify-mcp-server
 ```
 
 ## Installation Methods
