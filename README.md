@@ -4,27 +4,41 @@ A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provi
 
 ## Installation
 
-### Via mcp-get (Recommended)
+### Quick Start for Mac Users
+
+📖 **[Complete Mac Setup Guide](docs/MAC_SETUP_GUIDE.md)** - Step-by-step instructions for beginners
+
+**Short version:**
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone and setup
+git clone https://github.com/Fast-Transients/lodgify-mcp-server.git
+cd lodgify-mcp-server
+uv sync
+
+# Test with your API key
+export LODGIFY_API_KEY="your_api_key_here"
+uv run python entrypoint.py --mode info
+```
+
+### Via mcp-get (Coming Soon)
 
 ```bash
 npx @michaellatman/mcp-get@latest install lodgify
 ```
 
-### Via uv (Direct)
+### Via uv (Direct - Coming Soon)
 
 ```bash
 uvx lodgify-mcp-server
 ```
 
-### Manual Installation
-
-```bash
-uv add lodgify-mcp-server
-```
-
 ### Local Development Installation
 
-If the package isn't available on PyPI yet, you can test locally:
+For testing before PyPI publishing:
 
 ```bash
 # Clone and install locally
@@ -33,12 +47,13 @@ cd lodgify-mcp-server
 uv sync
 ```
 
-Then use this Claude Desktop configuration:
+#### Local Claude Desktop Configuration
 
+**Windows:**
 ```json
 {
   "mcpServers": {
-    "lodgify-local": {
+    "lodgify": {
       "command": "uv",
       "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
       "env": {
@@ -49,11 +64,22 @@ Then use this Claude Desktop configuration:
 }
 ```
 
-## Quick Start
+**Mac/Linux:**
+```json
+{
+  "mcpServers": {
+    "lodgify": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
 
-### Claude Desktop Integration (Recommended)
-
-Add this configuration to your Claude Desktop config file:
+## Claude Desktop Integration
 
 ```json
 {
