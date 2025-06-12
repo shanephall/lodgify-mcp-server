@@ -215,3 +215,7 @@ upstream advisories.
 - [Lodgify API Docs](https://docs.lodgify.com/)
 - [MCP Protocol](https://modelcontextprotocol.io/)
 - [GitHub Issues](https://github.com/fast-transients/lodgify-mcp-server/issues)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and testing instructions.
