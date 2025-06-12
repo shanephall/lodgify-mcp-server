@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "lodgify-local": {
+      "command": "uv",
+      "args": ["run", "--directory", "C:\\Users\\shane\\Documents\\GitHub\\lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}

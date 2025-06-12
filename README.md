@@ -22,6 +22,33 @@ uvx lodgify-mcp-server
 uv add lodgify-mcp-server
 ```
 
+### Local Development Installation
+
+If the package isn't available on PyPI yet, you can test locally:
+
+```bash
+# Clone and install locally
+git clone https://github.com/Fast-Transients/lodgify-mcp-server.git
+cd lodgify-mcp-server
+uv sync
+```
+
+Then use this Claude Desktop configuration:
+
+```json
+{
+  "mcpServers": {
+    "lodgify-local": {
+      "command": "uv",
+      "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
 ## Quick Start
 
 ### Claude Desktop Integration (Recommended)
