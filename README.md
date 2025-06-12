@@ -4,17 +4,12 @@ A Model Context Protocol (MCP) server for the Lodgify vacation rental API. Provi
 
 ## Installation
 
-### Quick Start for Mac Users
+### 🚀 Current Working Method
 
-📖 **[Complete Mac Setup Guide](MAC_SETUP_GUIDE.md)** - Step-by-step instructions for beginners
-
-**Short version:**
+**Local Installation** (Recommended until PyPI publishing is complete):
 
 ```bash
-# Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone and setup
+# Clone and install locally
 git clone https://github.com/Fast-Transients/lodgify-mcp-server.git
 cd lodgify-mcp-server
 uv sync
@@ -24,27 +19,21 @@ export LODGIFY_API_KEY="your_api_key_here"
 uv run python entrypoint.py --mode info
 ```
 
-### Via mcp-get (Coming Soon)
+### 📖 Platform-Specific Guides
 
+- **Mac Users**: [Complete Mac Setup Guide](MAC_SETUP_GUIDE.md) - Step-by-step instructions
+- **Windows Users**: See local installation above, then use Windows config below
+
+### 🔮 Future Methods (Coming Soon)
+
+**Via mcp-get:**
 ```bash
 npx @michaellatman/mcp-get@latest install lodgify
 ```
 
-### Via uv (Direct - Coming Soon)
-
+**Via uvx:**
 ```bash
 uvx lodgify-mcp-server
-```
-
-### Local Development Installation
-
-For testing before PyPI publishing:
-
-```bash
-# Clone and install locally
-git clone https://github.com/Fast-Transients/lodgify-mcp-server.git
-cd lodgify-mcp-server
-uv sync
 ```
 
 #### Local Claude Desktop Configuration
@@ -81,6 +70,39 @@ uv sync
 
 ## Claude Desktop Integration
 
+**Currently use local installation** (until PyPI publishing is complete):
+
+**Windows:**
+```json
+{
+  "mcpServers": {
+    "lodgify": {
+      "command": "uv",
+      "args": ["run", "--directory", "C:\\path\\to\\lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**Mac/Linux:**
+```json
+{
+  "mcpServers": {
+    "lodgify": {
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/lodgify-mcp-server", "python", "entrypoint.py"],
+      "env": {
+        "LODGIFY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**Future uvx method** (once published to PyPI):
 ```json
 {
   "mcpServers": {
@@ -152,6 +174,10 @@ docker-compose up -d server
 ```
 
 ## Troubleshooting
+
+### Getting "spawn uvx ENOENT" error?
+
+📋 **[Quick Fix Guide](QUICK_FIX_UVX_ERROR.md)** - Fix the uvx error by using local installation
 
 **"API key is required" error?** Make sure you're using `-e` flag in Docker:
 
