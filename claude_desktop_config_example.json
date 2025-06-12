@@ -1,13 +1,11 @@
 {
   "mcpServers": {
     "lodgify-api": {
-      "command": "docker",      
-      "args": [
-        "run", "-i", "--rm",
-        "-e", "LODGIFY_API_KEY=your_lodgify_api_key_here",
-        "ghcr.io/fast-transients/lodgify-mcp-server:latest",
-        "--mode", "server"
-      ]
+      "command": "uvx",      
+      "args": ["lodgify-mcp-server"],
+      "env": {
+        "LODGIFY_API_KEY": "your_lodgify_api_key_here"
+      }
     }
   }
 }
