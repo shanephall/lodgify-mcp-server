@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2025-06-12
+
+### Added
+- Automated unit tests covering core API functions
+- GitHub Actions workflow for running tests on pull requests
+
 ## [0.2.0] - 2025-06-10
 
 ### Changed
