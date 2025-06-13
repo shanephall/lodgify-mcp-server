@@ -6,6 +6,8 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
+  release:
+    types: [ published ]
   workflow_dispatch:
 
 jobs:
@@ -79,7 +81,9 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v'))
     environment:
       name: pypi
       url: https://pypi.org/project/lodgify-mcp-server/
