@@ -44,7 +44,7 @@ Add this block to your Claude Desktop configuration (see examples in the `exampl
 
 ## Troubleshooting
 - Ensure the `LODGIFY_API_KEY` environment variable is set.
-- If `uv` or `uvx` is missing, install it from [astral.sh/uv](https://astral.sh/uv/).
+- Getting `spawn uvx ENOENT`? Install `uv` from [astral.sh/uv](https://astral.sh/uv/) and restart your shell.
 
 ## Security
 After syncing dependencies, run `pip-audit` to check for known vulnerabilities. The `uv.lock` file pins `starlette` 0.47.0 to address upstream advisories.
