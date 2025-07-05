@@ -618,12 +618,18 @@ async def get_occupancy_summary(
         available_days_with_rate = 0
 
         # Parse dates
-        s_date = date.fromisoformat(start_date)
-        e_date = date.fromisoformat(end_date)
+        try:
+            s_date = date.fromisoformat(start_date)
+            e_date = date.fromisoformat(end_date)
+        except ValueError as e:
+            return {"success": False, "error": f"Invalid date format: {e}"}
 
         # Iterate through each day in the calendar data
         for day_data in calendar_data:
-            day = date.fromisoformat(day_data["date"])
+            try:
+                day = date.fromisoformat(day_data["date"])
+            except ValueError as e:
+                return {"success": False, "error": f"Invalid date format in calendar data: {e}"}
             if s_date <= day <= e_date:
                 total_days += 1
                 if day_data.get("status") == "Booked":
